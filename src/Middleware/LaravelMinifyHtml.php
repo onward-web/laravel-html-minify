@@ -21,9 +21,9 @@ class LaravelMinifyHtml
 
         if (
             Config::get('htmlminify.default') &&
+            $this->isRouteEnable($request) &&
             $this->isResponseObject($response) &&
             $this->isHtmlResponse($response) &&
-            !$this->isRouteExclude($request) &&
             ($response->isSuccessful() || App::isProduction())
         ) {
             $response->setContent(LaravelHtmlMinifyFacade::htmlMinify($response->getContent()));
@@ -53,8 +53,8 @@ class LaravelMinifyHtml
      * @param $request
      * @return bool
      */
-    protected function isRouteExclude($request): bool
+    protected function isRouteEnable($request): bool
     {
-        return $request->route() && in_array($request->route()->getName(), Config::get('htmlminify.exclude_route', []));
+        return $request->route() && in_array($request->route()->getName(), Config::get('htmlminify.enable_routes', []));
     }
 }
